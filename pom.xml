@@ -32,12 +32,15 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-remote-shell</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -51,7 +54,67 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-docker-file</id>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/assembly</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 
+
+    <profiles>
+        <profile>
+            <id>build-image</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>build-docker-image</id>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <environmentVariables>
+                                        <WORK_DIR>${project.build.directory}/docker-work</WORK_DIR>
+                                        <DOCKER_FILE_LOCATION>${project.basedir}/src/main/assembly/Dockerfile</DOCKER_FILE_LOCATION>
+                                        <DISTRIBUTION_FILE_LOCATION>${project.build.directory}/${project.artifactId}-${project.version}.tar.gz</DISTRIBUTION_FILE_LOCATION>
+                                    </environmentVariables>
+                                    <executable>docker build ${project.build.outputDirectory}</executable>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+
+
+    </profiles>
 </project>

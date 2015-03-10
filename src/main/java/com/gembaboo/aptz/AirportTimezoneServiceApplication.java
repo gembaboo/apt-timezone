@@ -10,4 +10,6 @@ public class AirportTimezoneServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(AirportTimezoneServiceApplication.class, args);
     }
+
+
 }
