@@ -19,11 +19,4 @@ public abstract class AbstractFileLoader implements FileLoader {
 
     protected abstract void doLoadFile(File file);
 
-    public static FileLoader createSimpleFileLoader() {
-        return new SimpleFileLoader();
-    }
-
-    public static FileLoader createMongoFileLoader() {
-        return new AirportFileLoader();
-    }
 }

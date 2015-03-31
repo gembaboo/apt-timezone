@@ -20,7 +20,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <start-class>com.gembaboo.aptz.AirportLoader</start-class>
+        <start-class>com.gembaboo.aptz.Main</start-class>
         <java.version>1.8</java.version>
         <camel.version>2.15.0</camel.version>
     </properties>

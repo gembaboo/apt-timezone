@@ -1,6 +1,6 @@
 package com.gembaboo.aptz.fileloader.csv;
 
-import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
 import org.apache.camel.Message;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,8 +12,7 @@ public class CsvToMongoRouteBuilder extends CsvRouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        @SuppressWarnings("deprecation")
-        final MongoOperations mongoOps = new MongoTemplate(new Mongo(), "database");
+        final MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "database");
 
         super.configure();
         from("direct:processOutput").process(

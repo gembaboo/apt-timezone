@@ -35,7 +35,7 @@ public class CsvRouteBuilderTest extends CamelTestSupport {
         assertTrue(notify.matches(10, TimeUnit.SECONDS));
     }
 
-    @Test
+    //@Test
     public void File_LargeFile_AllLinesRead() throws Exception {
         startCamel("airports.csv");
 
