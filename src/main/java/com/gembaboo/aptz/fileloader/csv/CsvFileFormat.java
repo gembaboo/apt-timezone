@@ -18,10 +18,10 @@ public class CsvFileFormat {
     private String name;
 
     @DataField(pos = 5, columnName = "latitude_deg")
-    private String latitudeDeg;
+    private Double latitudeDeg;
 
     @DataField(pos = 6, columnName = "longitude_deg")
-    private String longitudeDeg;
+    private Double longitudeDeg;
 
     @DataField(pos = 7, columnName = "elevation_ft")
     private String elevationFt;
@@ -83,19 +83,19 @@ public class CsvFileFormat {
         this.name = name;
     }
 
-    public String getLatitudeDeg() {
+    public Double getLatitudeDeg() {
         return latitudeDeg;
     }
 
-    public void setLatitudeDeg(String latitudeDeg) {
+    public void setLatitudeDeg(Double latitudeDeg) {
         this.latitudeDeg = latitudeDeg;
     }
 
-    public String getLongitudeDeg() {
+    public Double getLongitudeDeg() {
         return longitudeDeg;
     }
 
-    public void setLongitudeDeg(String longitudeDeg) {
+    public void setLongitudeDeg(Double longitudeDeg) {
         this.longitudeDeg = longitudeDeg;
     }
 
