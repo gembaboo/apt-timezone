@@ -144,18 +144,18 @@
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <outputDirectory>${basedir}/src/main/docker</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/assembly</directory>
-                                    <filtering>true</filtering>
+                                    <directory>${project.build.directory}</directory>
                                     <includes>
-                                        <include>**/*</include>
+                                        <include>${project.artifactId}-${project.version}.jar</include>
                                     </includes>
                                 </resource>
                             </resources>
+                            <overwrite>true</overwrite>
                         </configuration>
                     </execution>
                 </executions>
@@ -182,14 +182,13 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <environmentVariables>
-                                        <WORK_DIR>${project.build.directory}/docker-work</WORK_DIR>
-                                        <DOCKER_FILE_LOCATION>${project.basedir}/src/main/assembly/Dockerfile
-                                        </DOCKER_FILE_LOCATION>
+                                        <WORK_DIR>${basedir}/src/main/docker</WORK_DIR>
+                                        <DOCKER_FILE_LOCATION>${basedir}/src/main/docker</DOCKER_FILE_LOCATION>
                                         <DISTRIBUTION_FILE_LOCATION>
                                             ${project.build.directory}/${project.artifactId}-${project.version}.tar.gz
                                         </DISTRIBUTION_FILE_LOCATION>
                                     </environmentVariables>
-                                    <executable>docker build ${project.build.outputDirectory}</executable>
+                                    <executable>docker build ${basedir}/src/main/docker</executable>
                                 </configuration>
                             </execution>
                         </executions>

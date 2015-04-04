@@ -1,6 +1,7 @@
 *.iml
 .idea/
-**/src/main/generated/
+src/main/docker/*.jar
+src/main/generated/
 **/target/
 pom.xml.tag
 pom.xml.releaseBackup
