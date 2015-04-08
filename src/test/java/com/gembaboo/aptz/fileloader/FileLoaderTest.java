@@ -18,7 +18,7 @@ public class FileLoaderTest {
 
     @Test(expected = FileLoader.FileNotFound.class)
     public void File_NoExists_ExceptionIsThrown() {
-        File file = new File(System.getProperty("user.dir") + "/src/test/resources/invalid_file.csv");
+        File file = new File(System.getProperty("user.dir") + "/src/test/resources/invalid_file.airport");
         FileLoader fileLoader = FileLoaderFactory.createSimpleFileLoader();
         fileLoader.loadFile(file);
     }

@@ -9,8 +9,8 @@ class QueryUtils {
     /**
      * makes a $gte/$lte range query (both ends inclusive)
      */
-    static DBObject between(String field, Object from, Object to) {
-        return new BasicDBObject(field, new BasicDBObject(QueryOperators.GTE,
+    static DBObject between(Object from, Object to) {
+        return new BasicDBObject(VersioningMongoDao._ID, new BasicDBObject(QueryOperators.GTE,
                 from).append(QueryOperators.LTE, to));
     }
 }

@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.fileloader.csv;
+package com.gembaboo.aptz.fileloader.airport;
 
 
 public class CsvToMockRouteBuilder extends CsvRouteBuilder {

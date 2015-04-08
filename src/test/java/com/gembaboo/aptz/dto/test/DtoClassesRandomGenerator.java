@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.dao.test;
+package com.gembaboo.aptz.dto.test;
 
 import com.openpojo.random.RandomFactory;
 import com.openpojo.random.impl.DefaultRandomGenerator;
@@ -14,10 +14,10 @@ import java.util.*;
  * Provides random values of custom types for pojo testing.
  * See DefaultRandomGenerator for usage.
  */
-class DaoClassesRandomGenerator extends DefaultRandomGenerator {
+class DtoClassesRandomGenerator extends DefaultRandomGenerator {
     private final Class<?>[] clazz;
 
-    public DaoClassesRandomGenerator(Class<?>... clazz) {
+    public DtoClassesRandomGenerator(Class<?>... clazz) {
         this.clazz = clazz;
     }
 

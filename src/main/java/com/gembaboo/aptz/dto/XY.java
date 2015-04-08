@@ -1,6 +1,4 @@
-package com.gembaboo.aptz.dao;
-
-import org.codehaus.groovy.util.StringUtil;
+package com.gembaboo.aptz.dto;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -1,6 +1,7 @@
-package com.gembaboo.aptz.datastore;
+package com.gembaboo.aptz.datastore.file;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gembaboo.aptz.datastore.DataStore;
 
 import java.io.File;
 import java.io.IOException;

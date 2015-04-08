@@ -1,18 +1,19 @@
-package com.gembaboo.aptz.fileloader;
+package com.gembaboo.aptz.fileloader.airport;
 
-import com.gembaboo.aptz.fileloader.csv.CsvRouteBuilder;
-import com.gembaboo.aptz.fileloader.csv.CsvToMongoRouteBuilder;
+import com.gembaboo.aptz.fileloader.AbstractFileLoader;
+import com.gembaboo.aptz.fileloader.airport.CsvRouteBuilder;
+import com.gembaboo.aptz.fileloader.airport.CsvToMongoRouteBuilder;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 
 import java.io.File;
 
 /**
- * Loads the airport file into MongoDB using the csv dataformat
+ * Loads the airport file into MongoDB using the airport dataformat
  */
 public class AirportFileLoader extends AbstractFileLoader {
 
-    AirportFileLoader() {
+    public AirportFileLoader() {
         super();
     }
 

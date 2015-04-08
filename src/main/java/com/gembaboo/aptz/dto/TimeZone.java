@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.dao;
+package com.gembaboo.aptz.dto;
 
 import java.io.Serializable;
 import java.time.ZoneId;

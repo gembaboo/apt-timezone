@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.fileloader.csv;
+package com.gembaboo.aptz.fileloader.airport;
 
 import org.apache.camel.ShutdownRoute;
 import org.apache.camel.ShutdownRunningTask;

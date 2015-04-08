@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.fileloader.csv;
+package com.gembaboo.aptz.fileloader.airport;
 
 import com.mongodb.MongoClient;
 import org.apache.camel.Message;
@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class CsvToMongoRouteBuilder extends CsvRouteBuilder {
 
+    @SuppressWarnings("unchecked")
     @Override
     public void configure() throws Exception {
         final MongoOperations mongoOps = new MongoTemplate(new MongoClient(), "database");

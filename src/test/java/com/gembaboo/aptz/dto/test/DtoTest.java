@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.dao.test;
+package com.gembaboo.aptz.dto.test;
 
 import com.openpojo.random.RandomFactory;
 import com.openpojo.reflection.PojoClass;
@@ -17,10 +17,10 @@ import java.time.ZoneId;
 import java.util.*;
 
 
-public class DaoTest {
+public class DtoTest {
 
     // The package to test.
-    public static final String POJO_PACKAGE = "com.gembaboo.aptz.dao";
+    public static final String POJO_PACKAGE = "com.gembaboo.aptz.dto";
 
     private PojoValidator pojoValidator;
 
@@ -28,9 +28,7 @@ public class DaoTest {
 
     @Test
     public void testPackageClasses() {
-        for (PojoClass pojoClass : pojoClasses) {
-            pojoValidator.runValidation(pojoClass);
-        }
+        pojoClasses.forEach(pojoValidator::runValidation);
     }
 
     @Before
@@ -41,7 +39,7 @@ public class DaoTest {
     }
 
     private void registerRandomGenerator(Class<?>... clazz) {
-        RandomFactory.addRandomGenerator(new DaoClassesRandomGenerator(clazz));
+        RandomFactory.addRandomGenerator(new DtoClassesRandomGenerator(clazz));
     }
 
     private void setupPojoClasses() {

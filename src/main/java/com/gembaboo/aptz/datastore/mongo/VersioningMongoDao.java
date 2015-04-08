@@ -92,7 +92,7 @@ class VersioningMongoDao {
     private static void copyToShadow(DBCollection collection, DBObject baseObject) {
         DBCollection shadow = getShadowCollection(collection);
         baseObject.put(_ID, new BasicDBObject(_ID, getId(baseObject)).append(_VERSION, baseObject.get(_VERSION)));
-        WriteResult r = shadow.insert(baseObject, WriteConcern.SAFE);
+        shadow.insert(baseObject, WriteConcern.SAFE);
     }
 
     /**
@@ -125,7 +125,7 @@ class VersioningMongoDao {
         int version = getVersion(base);
         BasicDBObject revId = new BasicDBObject(_ID, getId(base)).append(_VERSION, version);
         base.put(_ID, revId);
-        WriteResult r = shadow.insert(base, WriteConcern.SAFE);
+        shadow.insert(base, WriteConcern.SAFE);
         // add the dummy version
         BasicDBObject dummy = new BasicDBObject(_ID, revId.append(_VERSION, version + 1)).append(_VERSION, "deleted:" + (version + 1));
         if (metaData != null){
@@ -166,10 +166,10 @@ class VersioningMongoDao {
      * @return the list of old version of the document with the given id
      */
     static List<DBObject> getOldVersions(DBCollection c, Object id) {
-        DBObject query = QueryUtils.between(_ID, new BasicDBObject(_ID, id)
+        DBObject query = QueryUtils.between(new BasicDBObject(_ID, id)
                 .append(_VERSION, 0), new BasicDBObject(_ID, id).append(_VERSION, Integer.MAX_VALUE));
 
-        List<DBObject> result = new ArrayList<DBObject>();
+        List<DBObject> result = new ArrayList<>();
         for (DBObject o : getShadowCollection(c).find(query).sort(new BasicDBObject(_ID, 1))) {
             o.put(_ID, ((BasicDBObject) getId(o)).get(_ID));
             result.add(o);

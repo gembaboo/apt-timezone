@@ -1,15 +1,13 @@
-package com.gembaboo.aptz.timezone;
+package com.gembaboo.aptz.datastore;
 
-import com.gembaboo.aptz.dao.TimeZone;
-import com.gembaboo.aptz.dao.XY;
+import com.gembaboo.aptz.dto.TimeZone;
+import com.gembaboo.aptz.dto.XY;
 
-import java.util.spi.TimeZoneNameProvider;
-
-public interface TimeZoneStore extends TimeZoneProvider {
+public interface TimeZoneStore {
 
     void storeTimeZoneWithLocation(TimeZone timeZone, XY location);
 
-    public final static class AlreadyExistsException extends RuntimeException {
+    final class AlreadyExistsException extends RuntimeException {
         private static final long serialVersionUID = 5422186970125411410L;
 
         public AlreadyExistsException() {
