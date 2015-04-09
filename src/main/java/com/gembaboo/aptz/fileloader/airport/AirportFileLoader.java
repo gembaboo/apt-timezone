@@ -1,9 +1,8 @@
 package com.gembaboo.aptz.fileloader.airport;
 
 import com.gembaboo.aptz.fileloader.AbstractFileLoader;
-import com.gembaboo.aptz.fileloader.airport.CsvRouteBuilder;
-import com.gembaboo.aptz.fileloader.airport.CsvToMongoRouteBuilder;
 import org.apache.camel.CamelContext;
+import org.apache.camel.RoutesBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 
 import java.io.File;
@@ -13,6 +12,7 @@ import java.io.File;
  */
 public class AirportFileLoader extends AbstractFileLoader {
 
+
     public AirportFileLoader() {
         super();
     }
@@ -20,19 +20,25 @@ public class AirportFileLoader extends AbstractFileLoader {
     @Override
     protected void doLoadFile(File file) {
         try {
-            CamelContext camelContext = createCamelContext(file);
+            CsvRouteBuilder routesBuilder = createRouteBuilder(file);
+            CamelContext camelContext = createCamelContext(file, routesBuilder);
             runCamel(camelContext);
+            routesBuilder.getDoneSignal().await();
         } catch (Exception e) {
             throw new CanNotLoadFile(e);
         }
     }
 
-    private CamelContext createCamelContext(File file) throws Exception {
-        CsvRouteBuilder routesBuilder = new CsvToMongoRouteBuilder();
-        routesBuilder.setFile(file);
+    private CamelContext createCamelContext(File file, RoutesBuilder routesBuilder) throws Exception {
         CamelContext context = new DefaultCamelContext();
         context.addRoutes(routesBuilder);
         return context;
+    }
+
+    private CsvRouteBuilder createRouteBuilder(File file) {
+        CsvRouteBuilder routesBuilder = new CsvToMongoRouteBuilder();
+        routesBuilder.setFile(file);
+        return routesBuilder;
     }
 
     private void runCamel(CamelContext camelContext) throws Exception {

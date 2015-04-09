@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class CsvRouteBuilderTest extends CamelTestSupport {
@@ -37,33 +38,35 @@ public class CsvRouteBuilderTest extends CamelTestSupport {
 
     //@Test
     public void File_LargeFile_AllLinesRead() throws Exception {
-        startCamel("airports.csv");
+        CountDownLatch doneSignal = startCamel("airports.csv");
 
         NotifyBuilder notify = new NotifyBuilder(context)
                 .wereSentTo(".*:out").whenDone(46247)
                 .create();
-
+        doneSignal.await();
         assertTrue(notify.matches(100000, TimeUnit.SECONDS));
     }
 
     @Test
     public void File_With19Cols_Parsed() throws Exception {
-        startCamel("airports19cols.csv");
+        CountDownLatch doneSignal = startCamel("airports19cols.csv");
 
         NotifyBuilder notify = new NotifyBuilder(context)
                 .wereSentTo(".*:out").whenExactlyDone(1)
                 .create();
 
         boolean done = notify.matches(10, TimeUnit.SECONDS);
+        doneSignal.await();
         assertTrue("Should read three lines", done);
     }
 
 
-    private void startCamel(String file) throws Exception {
+    private CountDownLatch startCamel(String file) throws Exception {
         CsvRouteBuilder routesBuilder = new CsvToMockRouteBuilder();
         routesBuilder.setFile(new File(System.getProperty("user.dir") + "/src/test/resources/" + file));
         context.addRoutes(routesBuilder);
         context.start();
+        return routesBuilder.getDoneSignal();
     }
 
     @After
