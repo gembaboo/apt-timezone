@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.net.UnknownHostException;
 
-public class MongoDataStore<T, K> implements DataStore<T, K> {
+public class MongoDataStore<T, K> implements DataStore<K, T> {
 
     private MongoOperations mongoOps;
 
@@ -26,7 +26,7 @@ public class MongoDataStore<T, K> implements DataStore<T, K> {
     }
 
     @Override
-    public void save(T object, K key) {
+    public void save(K key, T object) {
         mongoOps.save(object);
     }
 

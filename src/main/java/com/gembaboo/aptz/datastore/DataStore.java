@@ -1,7 +1,7 @@
 package com.gembaboo.aptz.datastore;
 
-public interface DataStore<T, K> {
-    void save(T object, K key);
+public interface DataStore<K, T> {
+    void save(K key, T object);
 
     T findByKey(K key);
 

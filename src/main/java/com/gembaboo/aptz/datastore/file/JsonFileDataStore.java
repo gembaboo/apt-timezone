@@ -11,29 +11,26 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
-public class JsonFileDataStore<T, K> implements DataStore<T, K> {
+public class JsonFileDataStore<K, T> implements DataStore<K, T> {
 
     public static final String APT_JSON_FILE_DATA_STORE = "aptz.datastore.file";
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    private final String dataPath;
-
-    private final Path dataDir;
-
+    private Path dataDir;
 
     public JsonFileDataStore() {
-        dataPath = System.getProperty(APT_JSON_FILE_DATA_STORE, System.getProperty("java.io.tmpdir"));
-        this.dataDir = Paths.get(dataPath);
+        this.dataDir = Paths.get(System.getProperty(APT_JSON_FILE_DATA_STORE, System.getProperty("java.io.tmpdir")+"/aptz"));
         if (Files.notExists(dataDir)) {
             throw new CanNotInitialize();
         }
     }
 
+
     @Override
-    public void save(T object, K key) {
+    public void save(K key, T object) {
         try {
-            Path dataFilePath = getDataFilePath(key);
+            Path dataFilePath = getDataFile(key);
             objectMapper.writeValue(dataFilePath.toFile(), object);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -43,41 +40,63 @@ public class JsonFileDataStore<T, K> implements DataStore<T, K> {
     @Override
     public T findByKey(K key) {
         try {
-            final Path dataKeyPath = getDataKeyPath(key);
-            Path dataFile = Files.walk(dataKeyPath, 1).findFirst().get();
-            if (Files.exists(dataFile) && Files.isRegularFile(dataFile)) {
-                return objectMapper.readValue(dataFile.toFile(), new TypeReference() {});
+            final Path dataKeyDir = getDataKeyDir(key);
+            if (Files.exists(dataKeyDir)) {
+                Path dataFile = Files.walk(dataKeyDir, 1).filter(path -> path.toFile().isFile()).findFirst().get();
+                if (Files.exists(dataFile) && Files.isRegularFile(dataFile)) {
+                    return objectMapper.readValue(dataFile.toFile(), new TypeReference<T>() {
+                    });
+                }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return null;
     }
 
-
-    private Path getDataFilePath(K key) throws IOException {
-        final Path dataKeyPath = getDataKeyPath(key);
-        Path dataFilePath = Paths.get(dataKeyPath.toString(), UUID.randomUUID().toString().concat(".json"));
-        if (Files.notExists(dataKeyPath)) {
-            Files.createDirectories(dataKeyPath);
-            Files.createFile(dataFilePath);
+    private Path getDataFile(K key) throws IOException {
+        final Path dataKeyDir = getDataKeyDir(key);
+        Path dataFile = Paths.get(dataKeyDir.toString(), UUID.randomUUID().toString().concat(".json"));
+        if (Files.notExists(dataKeyDir)) {
+            Files.createDirectories(dataKeyDir);
+            Files.createFile(dataFile);
         } else {
-            Optional<Path> entry = Files.list(Paths.get(dataPath, getKeyAsDirectoryName(key))).findFirst();
+            Optional<Path> entry = Files.walk(dataKeyDir, 1).filter(path -> path.toFile().isFile()).findFirst();
             if (entry.isPresent() && Files.isRegularFile(entry.get())) {
-                dataFilePath = entry.get();
+                dataFile = entry.get();
             } else {
-                Files.createFile(dataFilePath);
+                Files.createFile(dataFile);
             }
         }
-        return dataFilePath;
+        return dataFile;
     }
 
-    private Path getDataKeyPath(K key) {
-        return Paths.get(dataPath, getKeyAsDirectoryName(key));
+
+    private Path getDataKeyDir(K key) {
+        return Paths.get(dataDir.toString(), getKeyAsDirectoryName(key));
     }
 
     private String getKeyAsDirectoryName(K key) {
         return key.toString().replaceAll("/", ".").replaceAll("\\\\", ".");
+    }
+
+    public Path getDataDir() {
+        return dataDir;
+    }
+
+    public void setDataDir(Path dataDir) {
+        if (Files.notExists(dataDir)) {
+            try {
+                Files.createDirectories(dataDir);
+            } catch (IOException e) {
+                throw new CanNotInitialize();
+            }
+        }
+        this.dataDir = dataDir;
+    }
+
+    public void appendDataDir(String suffix) {
+        setDataDir(Paths.get(getDataDir().toString(), suffix));
     }
 
 

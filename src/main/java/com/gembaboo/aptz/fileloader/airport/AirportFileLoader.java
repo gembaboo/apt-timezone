@@ -36,7 +36,7 @@ public class AirportFileLoader extends AbstractFileLoader {
     }
 
     private CsvRouteBuilder createRouteBuilder(File file) {
-        CsvRouteBuilder routesBuilder = new CsvToMongoRouteBuilder();
+        CsvRouteBuilder routesBuilder = new CsvToJsonFileRouteBuilder();
         routesBuilder.setFile(file);
         return routesBuilder;
     }

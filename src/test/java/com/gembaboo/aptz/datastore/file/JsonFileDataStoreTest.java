@@ -7,12 +7,10 @@ import org.junit.Test;
 
 import java.time.ZoneId;
 
-import static org.junit.Assert.*;
-
 public class JsonFileDataStoreTest {
 
-    DataStore<TimeZone, String> dataStore = new JsonFileDataStore<>();
-    TimeZone timeZone = new TimeZone();
+    private DataStore<String, TimeZone> dataStore = new JsonFileDataStore<>();
+    private TimeZone timeZone = new TimeZone();
 
     @Before
     public void setUp() throws Exception {
@@ -22,12 +20,12 @@ public class JsonFileDataStoreTest {
 
     @Test
     public void testSave() throws Exception {
-        dataStore.save(timeZone, timeZone.getValue());
+        dataStore.save(timeZone.getValue(), timeZone);
     }
 
     @Test
     public void testFindByKey() throws Exception {
-        dataStore.save(timeZone, timeZone.getValue());
+        dataStore.save(timeZone.getValue(), timeZone);
         dataStore.findByKey(timeZone.getValue());
     }
 }
