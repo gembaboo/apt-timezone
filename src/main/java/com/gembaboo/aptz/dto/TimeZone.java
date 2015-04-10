@@ -1,5 +1,7 @@
 package com.gembaboo.aptz.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.time.ZoneId;
 import java.util.Objects;
@@ -7,6 +9,7 @@ import java.util.Objects;
 public class TimeZone implements Serializable {
     private static final long serialVersionUID = 5496807185512943273L;
 
+    @JsonIgnore
     private ZoneId zoneId;
 
     public TimeZone() {
