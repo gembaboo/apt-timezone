@@ -26,6 +26,7 @@
     </properties>
 
     <dependencies>
+        <!-- MongoDB support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -40,18 +41,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- REST support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-hateoas</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-remote-shell</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-jmx</artifactId>
-        </dependency>
+
+        <!-- Camel -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-spring</artifactId>
@@ -78,12 +74,25 @@
             <version>${camel.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-spring-javaconfig</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+
+        <!--Spring Boot production features -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-remote-shell</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -96,6 +105,17 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-jmx</artifactId>
+        </dependency>
+
+
+        <!-- Test scope dependencies -->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -105,15 +125,6 @@
             <artifactId>camel-test-spring</artifactId>
             <version>${camel.version}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring-javaconfig</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jolokia</groupId>
-            <artifactId>jolokia-core</artifactId>
         </dependency>
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
@@ -134,31 +145,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-docker-file</id>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <outputDirectory>${basedir}/src/main/docker</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}</directory>
-                                    <includes>
-                                        <include>${project.artifactId}-${project.version}.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                            <overwrite>true</overwrite>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -181,14 +167,8 @@
                                 </goals>
                                 <phase>package</phase>
                                 <configuration>
-                                    <environmentVariables>
-                                        <WORK_DIR>${basedir}/src/main/docker</WORK_DIR>
-                                        <DOCKER_FILE_LOCATION>${basedir}/src/main/docker</DOCKER_FILE_LOCATION>
-                                        <DISTRIBUTION_FILE_LOCATION>
-                                            ${project.build.directory}/${project.artifactId}-${project.version}.tar.gz
-                                        </DISTRIBUTION_FILE_LOCATION>
-                                    </environmentVariables>
-                                    <executable>docker build ${basedir}/src/main/docker</executable>
+                                    <executable>docker</executable>
+                                    <commandlineArgs>build -t ${project.artifactId}:latest ${basedir}</commandlineArgs>
                                 </configuration>
                             </execution>
                         </executions>
