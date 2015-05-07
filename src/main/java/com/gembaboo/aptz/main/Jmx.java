@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.spring;
+package com.gembaboo.aptz.main;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;

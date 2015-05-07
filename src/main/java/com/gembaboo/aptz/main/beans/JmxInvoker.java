@@ -1,4 +1,4 @@
-package com.gembaboo.aptz.spring.beans;
+package com.gembaboo.aptz.main.beans;
 
 import com.gembaboo.aptz.fileloader.FileLoader;
 import org.springframework.jmx.export.annotation.ManagedOperation;
