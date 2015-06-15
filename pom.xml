@@ -143,8 +143,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
+                <groupId>com.gembaboo.maven.plugins</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
             </plugin>
         </plugins>
     </build>
@@ -153,6 +154,9 @@
     <profiles>
         <profile>
             <id>build-image</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
