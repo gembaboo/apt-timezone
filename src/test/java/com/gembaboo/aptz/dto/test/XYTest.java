@@ -1,6 +1,6 @@
 package com.gembaboo.aptz.dto.test;
 
-import com.gembaboo.aptz.dto.XY;
+import com.gembaboo.aptz.domain.XY;
 import org.junit.Test;
 
 public class XYTest {

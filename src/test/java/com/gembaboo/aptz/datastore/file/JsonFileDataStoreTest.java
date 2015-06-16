@@ -1,7 +1,7 @@
 package com.gembaboo.aptz.datastore.file;
 
 import com.gembaboo.aptz.datastore.DataStore;
-import com.gembaboo.aptz.dto.TimeZone;
+import com.gembaboo.aptz.domain.TimeZone;
 import org.junit.Before;
 import org.junit.Test;
 

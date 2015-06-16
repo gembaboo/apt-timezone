@@ -1,5 +1,6 @@
 package com.gembaboo.aptz.main;
 
+import com.gembaboo.aptz.main.config.SpringConfiguration;
 import org.springframework.boot.SpringApplication;
 
 public class Main {

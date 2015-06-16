@@ -1,0 +1,11 @@
+app:
+  build: .
+  links:
+   - mongodb
+   - mysql
+  ports:
+   - "8080:8080"
+mongodb:
+  image: mongo
+mysql:
+  image: mysql
