@@ -19,7 +19,11 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/file/1")
-public class AptFileResource {
+public class AirportFileResource {
+
+    private final static String SEPARATOR = System.getProperty("file.separator");
+    private final static String UPLOAD_DIR = System.getProperty("user.dir") + SEPARATOR + "upload";
+
 
     @Autowired
     private FileLoader fileLoader;
@@ -47,7 +51,7 @@ public class AptFileResource {
 
     private File uploadFile(MultipartFile file) throws IOException {
         byte[] bytes = file.getBytes();
-        String fileName = UUID.randomUUID().toString() + ".csv";
+        String fileName = getFileName();
         File uploadedFile = new File(fileName);
         BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile));
         stream.write(bytes);
@@ -55,16 +59,11 @@ public class AptFileResource {
         return uploadedFile;
     }
 
+    private String getFileName() {
+        return UPLOAD_DIR + SEPARATOR + UUID.randomUUID().toString() + ".csv";
+    }
+
     private void processFile(File uploadedFile) {
         fileLoader.loadFile(uploadedFile);
     }
-
-    public FileLoader getFileLoader() {
-        return fileLoader;
-    }
-
-    public void setFileLoader(FileLoader fileLoader) {
-        this.fileLoader = fileLoader;
-    }
-
 }
