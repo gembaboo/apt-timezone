@@ -7,6 +7,12 @@ import org.apache.camel.dataformat.bindy.annotation.DataField;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * Record format of the airport file, available at
+ * <a href="http://ourairports.com/data/airports.csv">http://ourairports.com/data/airports.csv</a>
+ * It uses Camel Bindy annotations for defining the parsing of the csv lines.
+ * (See also <a href="http://camel.apache.org/bindy.html">http://camel.apache.org/bindy.html</a>
+ */
 @Data
 @CsvRecord(separator = ",", quoting = true, generateHeaderColumns = true)
 @Entity

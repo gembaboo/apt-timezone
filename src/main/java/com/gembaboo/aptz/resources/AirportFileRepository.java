@@ -4,7 +4,6 @@ import com.gembaboo.aptz.domain.AirportFileRecord;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

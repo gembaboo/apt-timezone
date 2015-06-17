@@ -62,7 +62,7 @@ public class CsvRouteBuilderTest extends CamelTestSupport {
 
 
     private CountDownLatch startCamel(String file) throws Exception {
-        CsvRouteBuilder routesBuilder = new CsvToMockRouteBuilder();
+        CsvToMockRouteBuilder routesBuilder = new CsvToMockRouteBuilder();
         routesBuilder.setFile(new File(System.getProperty("user.dir") + "/src/test/resources/" + file));
         context.addRoutes(routesBuilder);
         context.start();

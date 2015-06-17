@@ -1,64 +1,68 @@
 package com.gembaboo.aptz.fileloader;
 
 import com.gembaboo.aptz.domain.AirportFileRecord;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
-import org.apache.camel.ShutdownRoute;
-import org.apache.camel.ShutdownRunningTask;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.BindyType;
 
 import java.io.File;
-import java.util.concurrent.CountDownLatch;
 
-
+/**
+ * Camel route builder to poll a directory, load the files placed into it, process each line and
+ * parse it using Camel Bindy then forward it to {@link #DIRECT_PROCESS_OUTPUT}
+ * See {@link #configure()}
+ */
 public abstract class CsvRouteBuilder extends RouteBuilder {
 
+    protected static final String DIRECT_PROCESS_OUTPUT = "direct:processOutput";
+    /**
+     * Location if the file being processed. It is relative to {@link #file}
+     */
+    private static final String PRE_MOVE = ".inprogress";
+    /**
+     * Failed files are moved here. It is relative to {@link #file}
+     */
+    private static final String FAILED = ".failed";
+    /**
+     * Processed files are moved here. It is relative to {@link #PRE_MOVE}
+     */
+    private static final String PROCESSED = "../.processed";
+    /**
+     * The directory or file subject for processing by Camel
+     */
     private File file = new File(System.getProperty("user.dir"));
-
-    private CountDownLatch doneSignal;
 
     @Override
     public void configure() throws Exception {
-        configureContext();
         String fileUri = getFileUri();
-        this.doneSignal = new CountDownLatch(1);
-        from(fileUri).routeId("read-file").startupOrder(1)
-                .shutdownRunningTask(ShutdownRunningTask.CompleteAllTasks)
-                .onCompletion().process(getCompletionCallback()).end().split()
+        from(fileUri).routeId("parse-file")
+                .split()
+                        //Split line by line
                 .tokenize("\n").streaming().unmarshal().string("UTF-8")
+                //Ignore the first line of the file
                 .filter().simple("${property.CamelSplitIndex} > 0")
+                //remove double " characters
                 .transform(body().regexReplaceAll("\"\"", ""))
+                        //Parse the line using bindy
                 .unmarshal().bindy(BindyType.Csv, AirportFileRecord.class.getPackage().getName())
-                .to("direct:processOutput");
+                .to(DIRECT_PROCESS_OUTPUT);
     }
 
 
     /**
-     * Releases the latch
+     * If the {@link #file} is a directory (default behavior), the directory is polled for new files.
+     * The processed file is moved to the {@link #PRE_MOVE} folder for processing. Once the processing completed it is moved to the {@link #PROCESSED} folder.
+     * If the processing fails it is moved to the {@link #FAILED} directory. All three folders are under the {@link #file} directory.
+     * <p/>
+     * In case only one file should be loaded (i.e. {@link #file} referst to a plain file), it is left on its original location.
+     *
+     * @return The URI of the file component (For the uri syntax refer to <a href="http://camel.apache.org/file2.html">http://camel.apache.org/file2.html</a>)
      */
-    private Processor getCompletionCallback() {
-        return new Processor() {
-            @Override
-            public void process(Exchange exchange) throws Exception {
-                if (null != doneSignal) {
-                    doneSignal.countDown();
-                }
-            }
-        };
-    }
-
-
-    private void configureContext() {
-        //This route should stop after one file has been processed, but not before that.
-        getContext().setShutdownRoute(ShutdownRoute.Defer);
-        getContext().getShutdownStrategy().setTimeout(1);
-    }
-
     private String getFileUri() {
-        String url = "file:" + file.getParent() + "?noop=true&charset=utf-8";
-        if (file.isFile()) {
-            url += "&fileName=" + file.getName();
+        String url = "file:";
+        if (file.isDirectory()) {
+            url += file.getAbsolutePath() + "?move=" + PROCESSED + "&preMove=" + PRE_MOVE + "&moveFailed=" + FAILED + "&charset=utf-8";
+        } else {
+            url += file.getParent() + "?noop=true&charset=utf-8&fileName=" + file.getName();
         }
         return url;
     }
@@ -71,7 +75,4 @@ public abstract class CsvRouteBuilder extends RouteBuilder {
         this.file = file;
     }
 
-    public CountDownLatch getDoneSignal() {
-        return doneSignal;
-    }
 }

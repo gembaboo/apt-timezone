@@ -12,12 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableSwagger
 public class SwaggerConfig {
 
-    private SpringSwaggerConfig springSwaggerConfig;
-
     @Autowired
-    public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
-        this.springSwaggerConfig = springSwaggerConfig;
-    }
+    private SpringSwaggerConfig springSwaggerConfig;
 
     @Bean
     public SwaggerSpringMvcPlugin customImplementation() {
@@ -30,6 +26,4 @@ public class SwaggerConfig {
         ApiInfo apiInfo = new ApiInfo("APT", "API for Airport Timezone Service", null, null, null, null);
         return apiInfo;
     }
-
-
 }

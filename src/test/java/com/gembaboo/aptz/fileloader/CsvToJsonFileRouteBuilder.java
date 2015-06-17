@@ -20,7 +20,7 @@ public class CsvToJsonFileRouteBuilder extends CsvRouteBuilder {
 
         final AirportTimeZoneStore airportTimeZoneStore = new AirportTimeZoneFileStore();
         super.configure();
-        from("direct:processOutput").process(
+        from(DIRECT_PROCESS_OUTPUT).process(
                 exchange -> {
                     Message in = exchange.getIn();
                     List<Map> list = (List<Map>) in.getBody();

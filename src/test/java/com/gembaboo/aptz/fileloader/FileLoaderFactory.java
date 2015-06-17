@@ -6,8 +6,4 @@ public class FileLoaderFactory {
         return new SimpleFileLoader();
     }
 
-
-    public static FileLoader createMongoFileLoader() {
-        return new AirportFileLoader();
-    }
 }
