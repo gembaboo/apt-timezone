@@ -4,7 +4,7 @@ import com.gembaboo.aptz.domain.Airport;
 import com.gembaboo.aptz.domain.AirportFileRecord;
 import com.gembaboo.aptz.domain.AirportTimeZone;
 import com.gembaboo.aptz.resources.AirportRepository;
-import com.gembaboo.aptz.resources.AirportTimezoneRepository;
+import com.gembaboo.aptz.resources.AirportTimezoneRepository1;
 import org.apache.camel.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
@@ -22,7 +22,7 @@ public class CsvToMongoRouteBuilder extends CsvRouteBuilder {
      * The MongoDB repository containing {@link AirportTimeZone} entries.
      */
     @Autowired
-    private AirportTimezoneRepository airportTimezoneRepository;
+    private AirportTimezoneRepository1 airportTimezoneRepository1;
 
     /**
      * The MongoDB repository containing {@link Airport} entries.
@@ -54,7 +54,7 @@ public class CsvToMongoRouteBuilder extends CsvRouteBuilder {
         if (airportCode != null){
             AirportTimeZone airportTimeZone = new AirportTimeZone();
             airportTimeZone.setAirport(airportCode);
-            airportTimezoneRepository.save(airportTimeZone);
+            airportTimezoneRepository1.save(airportTimeZone);
             Airport airport = new Airport();
             airport.setAirport(airportCode);
             airport.setLocation(new GeoJsonPoint(record.getLatitudeDeg(), record.getLongitudeDeg()));
