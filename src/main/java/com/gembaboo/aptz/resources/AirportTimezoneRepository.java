@@ -1,7 +1,11 @@
 package com.gembaboo.aptz.resources;
 
-/**
- * Created by U524364 on 2015.06.16..
- */
-public interface AirportTimezoneRepository extends MongoRepository<> {
+import com.gembaboo.aptz.domain.AirportTimeZone;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+
+@RepositoryRestResource(collectionResourceRel = "timezone", path = "timezone")
+public interface AirportTimezoneRepository extends MongoRepository<AirportTimeZone, String> {
+
+
 }
