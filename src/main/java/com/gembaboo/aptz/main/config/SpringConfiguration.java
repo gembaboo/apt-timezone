@@ -2,6 +2,7 @@ package com.gembaboo.aptz.main.config;
 
 import com.gembaboo.aptz.fileloader.CsvToMongoRouteBuilder;
 import com.gembaboo.aptz.resources.AirportFileResource;
+import com.gembaboo.aptz.gateway.LocationTimeZone;
 import org.apache.camel.RoutesBuilder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -22,5 +23,10 @@ public class SpringConfiguration {
         CsvToMongoRouteBuilder csvToMongoRouteBuilder = new CsvToMongoRouteBuilder();
         csvToMongoRouteBuilder.setFile(new File(AirportFileResource.UPLOAD_DIR));
         return csvToMongoRouteBuilder;
+    }
+
+    @Bean
+    LocationTimeZone getLocationTimeZone() {
+        return new LocationTimeZone();
     }
 }

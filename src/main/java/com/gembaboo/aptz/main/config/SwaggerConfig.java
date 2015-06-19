@@ -29,7 +29,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .paths(or(regex("/file.*"),regex("/location.*"), regex("/data-api.*"), regex("/shutdown")))
+                .paths(or(regex("/file.*"),regex("/airport.*"), regex("/data-api.*"), regex("/shutdown")))
                 .build();
     }
 
