@@ -9,9 +9,11 @@ import org.springframework.jmx.export.annotation.AnnotationMBeanExporter;
 import org.springframework.jmx.export.assembler.MetadataMBeanInfoAssembler;
 import org.springframework.jmx.export.naming.MetadataNamingStrategy;
 
+/**
+ * Spring configuration bean for JMX support
+ */
 @Configuration
 public class Jmx {
-
 
     @Bean
     @Lazy(false)
@@ -30,6 +32,4 @@ public class Jmx {
     public MetadataMBeanInfoAssembler getMbeanInfoAssembler() {
         return new MetadataMBeanInfoAssembler(new AnnotationJmxAttributeSource());
     }
-
-
 }

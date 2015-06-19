@@ -1,29 +1,48 @@
 package com.gembaboo.aptz.main.config;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.models.dto.ApiInfo;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import static com.google.common.base.Predicates.or;
+import static springfox.documentation.builders.PathSelectors.regex;
+
+
+/**
+ * Swagger configuration bean
+ * See <a href="http://springfox.github.io/springfox/docs/current/#configuring-springfox">http://springfox.github.io/springfox/docs/current/#configuring-springfox</a>
+ */
+@EnableSwagger2
 @Configuration
-@EnableSwagger
+@ComponentScan(basePackages = {"com.gembaboo.aptz.resources"})
 public class SwaggerConfig {
 
-    @Autowired
-    private SpringSwaggerConfig springSwaggerConfig;
 
     @Bean
-    public SwaggerSpringMvcPlugin customImplementation() {
-        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig).apiInfo(getApiInfo())
-                .includePatterns("/.*");
+    public Docket apis() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .select()
+                .paths(or(regex("/file.*"),regex("/location.*"), regex("/data-api.*"), regex("/shutdown")))
+                .build();
     }
 
-    @Bean
-    public ApiInfo getApiInfo() {
-        ApiInfo apiInfo = new ApiInfo("APT", "API for Airport Timezone Service", null, null, null, null);
-        return apiInfo;
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title("Airport TimeZone API")
+                .description("")
+                .termsOfServiceUrl("http://gembaboo.com")
+                .contact("Gembaboo OSS")
+                .license("Apache License Version 2.0")
+                .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0")
+                .version("2.0")
+                .build();
     }
+
 }
