@@ -5,7 +5,7 @@ import com.gembaboo.aptz.domain.AirportFileRecord;
 import com.gembaboo.aptz.resources.AirportRepository;
 import org.apache.camel.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.geo.Point;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +46,9 @@ public class CsvToMongoRouteBuilder extends CsvRouteBuilder {
         if (airportCode != null) {
             Airport airport = new Airport();
             airport.setAirport(airportCode);
-            airport.setLocation(new GeoJsonPoint(record.getLatitudeDeg(), record.getLongitudeDeg()));
+            airport.setLocation(new Point(record.getLatitudeDeg(), record.getLongitudeDeg()));
+            airport.setName(record.getName());
+            airport.setCountry(record.getIsoCountry());
             airportRepository.save(airport);
         }
     }

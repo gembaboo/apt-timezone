@@ -6,6 +6,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
+/**
+ * Autowire support for Quartz' {@link SpringBeanJobFactory}
+ * See example at <a href="https://gist.github.com/jelies/5085593">https://gist.github.com/jelies/5085593</a>
+ */
 public final class AutoWiringSpringBeanJobFactory extends SpringBeanJobFactory implements ApplicationContextAware {
 
     private transient AutowireCapableBeanFactory beanFactory;

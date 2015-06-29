@@ -17,18 +17,27 @@ import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 
 import javax.sql.DataSource;
 
+
+/**
+ * Spring configuration for scheduling the update job using Quartz
+ * See <a href="http://quartz-scheduler.org/">http://quartz-scheduler.org/</a>
+ */
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan("com.gembaboo.aptz.scheduling")
 public class SchedulingConfiguration {
 
+    // There must be at least 5 seconds between subsequent calls to Google Maps API
+    public static final int MIN_DURATION_BETWEEN_CALLS = 5000;
+
+    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     private DataSource dataSource;
 
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Bean
+    @Bean(name = "jobdetail")
     public JobDetailFactoryBean getJobDetail() {
         JobDetailFactoryBean jobDetail = new JobDetailFactoryBean();
         jobDetail.setJobClass(ScheduledUpdate.class);
@@ -36,16 +45,16 @@ public class SchedulingConfiguration {
         return jobDetail;
     }
 
-    @Bean
+    @Bean(name = "trigger")
     public SimpleTriggerFactoryBean getTrigger() {
         SimpleTriggerFactoryBean factory = new SimpleTriggerFactoryBean();
         factory.setName("UPDATE_AIRPORTS");
-        factory.setRepeatInterval(1000 * 60 * 60 * 24);
+        factory.setRepeatInterval(MIN_DURATION_BETWEEN_CALLS);
         factory.setJobDetail(getJobDetail().getObject());
         return factory;
     }
 
-    @Bean
+    @Bean(name = "scheduler")
     @DependsOn(value = "quartzDataInitializer")
     public SchedulerFactoryBean getScheduler() {
         SchedulerFactoryBean quartzScheduler = new SchedulerFactoryBean();
@@ -57,6 +66,10 @@ public class SchedulingConfiguration {
         return quartzScheduler;
     }
 
+    /**
+     * Initializes the quartz jobstore in the default database.
+     * @return
+     */
     @Bean(name = "quartzDataInitializer")
     public DataSourceInitializer getQuartzDataInitializer() {
         DataSourceInitializer quartzDataInitializer = new DataSourceInitializer();

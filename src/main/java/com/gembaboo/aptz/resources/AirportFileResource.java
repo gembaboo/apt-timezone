@@ -1,7 +1,7 @@
 package com.gembaboo.aptz.resources;
 
 
-import com.gembaboo.aptz.domain.JobResult;
+import com.gembaboo.aptz.scheduling.BatchStatus;
 import com.gembaboo.aptz.scheduling.ScheduledUpdate;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+/**
+ * REST interface to manage the airpoirt files. It provides functions to upload the airport file.
+ * It also provides the status of the last update batch (which is a sequence of updates
+ * to the timezone field of the airport).
+ */
 @Slf4j
 @Api(description = "Upload airport file, available at http://ourairports.com/data/airports.csv")
 @Controller
@@ -53,17 +58,10 @@ public class AirportFileResource {
 
     }
 
-    @RequestMapping(value = "/process", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public JobResult upload() {
-        scheduledUpdate.processUpdates();
-        return scheduledUpdate.getJobResult();
-    }
-
     @RequestMapping(value = "/status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JobResult status() {
-        return scheduledUpdate.getJobResult();
+    public BatchStatus status() {
+        return scheduledUpdate.getBatchStatus();
     }
 
 

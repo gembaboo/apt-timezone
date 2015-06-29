@@ -5,9 +5,10 @@ import com.gembaboo.aptz.gateway.LocationTimeZone;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.geo.Point;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
-import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -30,7 +30,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping(value = "/airport/1")
 public class AirportResource {
 
-    @Autowired
+    @Reference
     private LocationTimeZone locationTimeZone;
 
     @Autowired
@@ -62,9 +62,7 @@ public class AirportResource {
         return new ResponseEntity<>(assembler.toResource(airportPage), HttpStatus.OK);
     }
 
-
-
-    @RequestMapping(value = "/{id}?timezone={timezone}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}?timezone={timezone}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public HttpEntity<Resource<Airport>> saveAirportTimeZone(@PathVariable String id, @PathVariable String timezone) {
         Airport airportRecord = airportRepository.findOne(id);
@@ -82,7 +80,7 @@ public class AirportResource {
 
 
     private Airport obtainZoneId(Airport airportRecord) {
-        GeoJsonPoint location = airportRecord.getLocation();
+        Point location = airportRecord.getLocation();
         ZoneId zoneId = locationTimeZone.getLocationTimeZone(location.getX(), location.getY());
         updateLocalDb(airportRecord, zoneId);
         return airportRecord;

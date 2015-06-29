@@ -7,9 +7,13 @@ REST service to provide and maintain timezone information for airports.
 ## Technologies
 
 - Spring Boot
+- REST with HATEOAS
 - MongoDB with spring-data-mongodb
-- Apache Camel
+- Spring Data (with audit)
+- Apache Camel (File loading, CSV parsing with Bindy, MongoDB persisting)
+- Quartz Scheduling
 - Swagger2
+- JMX over HTTP (Jolokia)
 - Maven
 - Docker
 
@@ -17,3 +21,4 @@ REST service to provide and maintain timezone information for airports.
 - Lombok
 - Jolokia
 - Open POJO
+- Joda Time

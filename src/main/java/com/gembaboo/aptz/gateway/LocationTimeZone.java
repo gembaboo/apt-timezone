@@ -2,8 +2,8 @@ package com.gembaboo.aptz.gateway;
 
 import com.gembaboo.aptz.domain.TimeZoneServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +17,7 @@ import java.util.Map;
  * https://maps.googleapis.com/maps/api/timezone/json?location=39.6034810,-119.6822510&timestamp=1331161200&key=API_KEY
  */
 @Slf4j
+@Service
 public class LocationTimeZone {
 
     @Value("${google.api_key}")
@@ -48,10 +49,11 @@ public class LocationTimeZone {
             log.error("Could not get timezone {}", response);
         }
         ZoneId result = null;
-        try{
-        result = ZoneId.of(timeZoneId);
-        }catch (Exception e){
-            log.error("Could not determine result. The returned time zone {} is not valid.",  response.getTimeZoneId(), e);
+        try {
+            result = ZoneId.of(timeZoneId);
+        } catch (RuntimeException e) {
+            log.error("Could not determine result. The returned time zone {} is not valid. Parameters: x:{}, y:{}", response.getTimeZoneId(), x, y, e);
+            throw e;
         }
         return result;
     }
