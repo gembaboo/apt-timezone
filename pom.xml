@@ -25,6 +25,7 @@
         <swagger-springmvc>1.0.2</swagger-springmvc>
         <swagger2-version>2.0.2</swagger2-version>
         <lombok.version>1.16.4</lombok.version>
+        <quartz.version>2.2.1</quartz.version>
     </properties>
 
     <dependencies>
@@ -43,12 +44,28 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901-1.jdbc4</version>
+        </dependency>
+-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
 
         <!-- MongoDB support -->
         <dependency>
@@ -100,7 +117,7 @@
             <artifactId>springfox-swagger2</artifactId>
             <version>${swagger2-version}</version>
         </dependency>
-      <dependency>
+        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger2-version}</version>
@@ -183,6 +200,11 @@
             <version>0.6.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <!--scope>test</scope-->
+        </dependency>
     </dependencies>
 
     <build>
@@ -196,10 +218,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                   <systemPropertyVariables>
+                    <systemPropertyVariables>
                         <propertyName>user.dir</propertyName>
                         <buildDirectory>${basedir}</buildDirectory>
-                   </systemPropertyVariables>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>

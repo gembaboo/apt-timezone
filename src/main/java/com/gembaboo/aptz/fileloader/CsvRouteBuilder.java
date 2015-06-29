@@ -35,14 +35,14 @@ public abstract class CsvRouteBuilder extends RouteBuilder {
     public void configure() throws Exception {
         String fileUri = getFileUri();
         from(fileUri).routeId("parse-file")
+                //Split line by line
                 .split()
-                        //Split line by line
                 .tokenize("\n").streaming().unmarshal().string("UTF-8")
                 //Ignore the first line of the file
                 .filter().simple("${property.CamelSplitIndex} > 0")
                 //remove double " characters
                 .transform(body().regexReplaceAll("\"\"", ""))
-                        //Parse the line using bindy
+                //Parse the line using camel bindy
                 .unmarshal().bindy(BindyType.Csv, AirportFileRecord.class.getPackage().getName())
                 .to(DIRECT_PROCESS_OUTPUT);
     }

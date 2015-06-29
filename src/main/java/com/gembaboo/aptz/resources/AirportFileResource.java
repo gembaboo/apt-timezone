@@ -1,8 +1,11 @@
 package com.gembaboo.aptz.resources;
 
 
+import com.gembaboo.aptz.domain.JobResult;
+import com.gembaboo.aptz.scheduling.ScheduledUpdate;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +29,10 @@ public class AirportFileResource {
     private final static String SEPARATOR = System.getProperty("file.separator");
     public final static String UPLOAD_DIR = System.getProperty("user.dir") + SEPARATOR + "upload";
 
+    @Autowired
+    private ScheduledUpdate scheduledUpdate;
+
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public String upload(@RequestParam MultipartFile file) {
@@ -45,6 +52,20 @@ public class AirportFileResource {
         }
 
     }
+
+    @RequestMapping(value = "/process", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JobResult upload() {
+        scheduledUpdate.processUpdates();
+        return scheduledUpdate.getJobResult();
+    }
+
+    @RequestMapping(value = "/status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JobResult status() {
+        return scheduledUpdate.getJobResult();
+    }
+
 
     private File uploadFile(MultipartFile file) throws IOException {
         byte[] bytes = file.getBytes();

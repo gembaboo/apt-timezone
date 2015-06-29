@@ -14,7 +14,7 @@ import java.time.ZoneId;
  */
 @Data
 @Document(collection = "airports")
-public class Airport {
+public class Airport extends AuditableEntity {
 
     /**
      * Iata airport code.

@@ -2,6 +2,7 @@ package com.gembaboo.aptz.gateway;
 
 import com.gembaboo.aptz.domain.TimeZoneServiceResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -46,6 +47,12 @@ public class LocationTimeZone {
         } else {
             log.error("Could not get timezone {}", response);
         }
-        return ZoneId.of(timeZoneId);
+        ZoneId result = null;
+        try{
+        result = ZoneId.of(timeZoneId);
+        }catch (Exception e){
+            log.error("Could not determine result. The returned time zone {} is not valid.",  response.getTimeZoneId(), e);
+        }
+        return result;
     }
 }

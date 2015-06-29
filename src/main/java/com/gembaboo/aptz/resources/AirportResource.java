@@ -5,7 +5,11 @@ import com.gembaboo.aptz.gateway.LocationTimeZone;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
+import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -47,6 +52,14 @@ public class AirportResource {
         airportResource.add(linkTo(methodOn(AirportResource.class).getAirport(id)).withSelfRel());
         airportResource.add(linkTo(methodOn(AirportResource.class).saveAirportTimeZone(id, "")).withSelfRel());
         return new ResponseEntity<>(airportResource, HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/airports?timezone={timezone}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public HttpEntity<PagedResources<Airport>> getAirportByTimezone(@PathVariable String timezone, Pageable pageable, PagedResourcesAssembler assembler) {
+        Page<Airport> airportPage = airportRepository.findByTimeZone(timezone, pageable);
+        return new ResponseEntity<>(assembler.toResource(airportPage), HttpStatus.OK);
     }
 
 
