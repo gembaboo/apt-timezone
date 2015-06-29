@@ -224,6 +224,28 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/config</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -256,7 +278,7 @@
                                 <phase>package</phase>
                                 <configuration>
                                     <executable>docker</executable>
-                                    <commandlineArgs>build -t ${project.artifactId}:latest ${basedir}</commandlineArgs>
+                                    <commandlineArgs>build -t ${project.artifactId}:latest ${basedir}/target</commandlineArgs>
                                 </configuration>
                             </execution>
                         </executions>

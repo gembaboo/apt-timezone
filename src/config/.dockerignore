@@ -1,0 +1,5 @@
+classes/*
+test-classes/*
+generated-*/*
+maven-*/*
+${project.artifactId}-${project.version}.jar.original
