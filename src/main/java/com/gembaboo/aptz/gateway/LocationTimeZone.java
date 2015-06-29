@@ -45,6 +45,8 @@ public class LocationTimeZone {
         //Check response
         if (response.getStatus().equals("OK")) {
             timeZoneId = response.getTimeZoneId();
+        } else if (response.getStatus().equals("OVER_QUERY_LIMIT")){
+            throw new OverQueryLimitException();
         } else {
             log.error("Could not get timezone {}", response);
         }
@@ -56,5 +58,13 @@ public class LocationTimeZone {
             throw e;
         }
         return result;
+    }
+
+    public final class OverQueryLimitException extends RuntimeException{
+        private static final long serialVersionUID = 3331206221585330957L;
+
+        public OverQueryLimitException() {
+            super("Status is OVER_QUERY_LIMIT");
+        }
     }
 }

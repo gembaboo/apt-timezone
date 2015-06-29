@@ -5,9 +5,8 @@ import com.gembaboo.aptz.gateway.LocationTimeZone;
 import com.gembaboo.aptz.resources.AirportRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.joda.time.format.DateTimeFormat;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -44,6 +43,11 @@ public class ScheduledUpdate implements Job {
     @Autowired
     private AirportRepository airportRepository;
 
+    private Scheduler scheduler;
+
+    private Trigger trigger;
+
+
     // The status of the batch, for the purpose of tracking the Google Maps API calls considering the daily allowance.
     private BatchStatus batchStatus;
 
@@ -55,6 +59,8 @@ public class ScheduledUpdate implements Job {
      */
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        this.trigger = jobExecutionContext.getTrigger();
+        this.scheduler = jobExecutionContext.getScheduler();
         calculateBatchStatus();
         if (batchStatus.getNumberOfCalls() < DAILY_CALL_LIMIT) {
             processEntry();
@@ -103,12 +109,30 @@ public class ScheduledUpdate implements Job {
             String timezone = locationTimeZone.getLocationTimeZone(location.getX(), location.getY()).getId();
             updateTimezone(airport, timezone);
             batchStatus.setNumberOfProcessed(batchStatus.getNumberOfProcessed() + 1);
+        } catch (LocationTimeZone.OverQueryLimitException e) {
+            log.error("Could not update airport {} ({}/{}) due to error {}", airport.getAirport(), airport.getName(), airport.getCountry(), e.getMessage());
+            batchStatus.setNumberOfFailed(batchStatus.getNumberOfFailed() + 1);
+            rescheduleJob();
         } catch (Exception e) {
             log.error("Could not update airport {} ({}/{}) due to error {}", airport.getAirport(), airport.getName(), airport.getCountry(), e.getMessage());
             batchStatus.setNumberOfFailed(batchStatus.getNumberOfFailed() + 1);
         } finally {
             batchStatus.setNumberOfCalls(batchStatus.getNumberOfCalls() + 1);
             airportRepository.save(airport);
+        }
+    }
+
+    private void rescheduleJob() {
+        try {
+            TriggerBuilder triggerBuilder = trigger.getTriggerBuilder();
+            triggerBuilder.startAt(batchStatus.getBatchStartTime().plusDays(1).toDate());
+            Trigger newTrigger = triggerBuilder.build();
+            scheduler.rescheduleJob(trigger.getKey(), newTrigger);
+            DateTime nextFireDateTime = new DateTime(newTrigger.getNextFireTime());
+            log.info("Update job rescheduled to run at {}",
+                    DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").print(nextFireDateTime));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 
