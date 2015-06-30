@@ -37,6 +37,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY postgresql.conf /etc/postgresql/9.4/main/postgresql.conf
 COPY apt-timezone-${project.version}.jar /usr/src/apt-timezone/
 COPY airport.json /var/tmp/export/
+COPY airport.csv /var/tmp/upload
 
 # Configure mongodb, load initial data
 RUN useradd -ms /bin/bash mongodb

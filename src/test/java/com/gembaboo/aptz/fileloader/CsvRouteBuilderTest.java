@@ -38,7 +38,7 @@ public class CsvRouteBuilderTest extends CamelTestSupport {
 
     //@Test
     public void File_LargeFile_AllLinesRead() throws Exception {
-        CountDownLatch doneSignal = startCamel("airports.csv");
+        CountDownLatch doneSignal = startCamel("../src/main/config/airport.csv");
 
         NotifyBuilder notify = new NotifyBuilder(context)
                 .wereSentTo(".*:out").whenDone(46247)
