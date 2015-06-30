@@ -10,9 +10,6 @@ RUN mkdir -p /var/tmp/export /var/tmp/upload/.failed /var/tmp/upload/.inprogress
 RUN ln -s /var/tmp/export /usr/src/apt-timezone/export
 RUN ln -s /var/tmp/upload /usr/src/apt-timezone/upload
 
-# Set volumes for data, logging and tmp
-VOLUME ["/var/data", "/var/log", "/var/tmp" ]
-
 # Force apt-get to use IPV4 (IPV 6 mirrors may not be accessible by the host)
 RUN echo "Acquire::ForceIPv4 true;" > /etc/apt/apt.conf.d/99force-ipv4
 
@@ -37,7 +34,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY postgresql.conf /etc/postgresql/9.4/main/postgresql.conf
 COPY apt-timezone-${project.version}.jar /usr/src/apt-timezone/
 COPY airport.json /var/tmp/export/
-COPY airport.csv /var/tmp/upload
+COPY airport.csv /var/tmp/upload/
 
 # Configure mongodb, load initial data
 RUN useradd -ms /bin/bash mongodb
