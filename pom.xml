@@ -259,6 +259,29 @@
 
     <profiles>
         <profile>
+            <id>behind-proxy</id>
+            <activation>
+                <property>
+                    <name>env.HTTP_PROXY</name>
+                </property>
+            </activation>
+            <properties>
+                <http_proxy>${env.HTTP_PROXY}</http_proxy>
+                <no_proxy>${env.HTTP_PROXY}</no_proxy>
+            </properties>
+        </profile>
+        <profile>
+            <id>behind-secure-proxy</id>
+            <activation>
+                <property>
+                    <name>env.HTTPS_PROXY</name>
+                </property>
+            </activation>
+            <properties>
+                <https_proxy>${env.HTTPS_PROXY}</https_proxy>
+            </properties>
+        </profile>
+        <profile>
             <id>build-image</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
