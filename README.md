@@ -1,6 +1,6 @@
 # Airport Timezone Service
 
-[![Build Status](https://travis-ci.org/pharsfalvi/apt-timezone.svg?branch=master)](https://travis-ci.org/pharsfalvi/apt-timezone)
+[![Build Status](https://travis-ci.org/gembaboo/apt-timezone.svg?branch=master)](https://travis-ci.org/gembaboo/apt-timezone)
 
 REST service to provide and maintain timezone information for airports.
 
