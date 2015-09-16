@@ -18,6 +18,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
  * Swagger configuration bean
  * See <a href="http://springfox.github.io/springfox/docs/current/#configuring-springfox">http://springfox.github.io/springfox/docs/current/#configuring-springfox</a>
  */
+@SuppressWarnings("unchecked")
 @EnableSwagger2
 @Configuration
 @ComponentScan(basePackages = {"com.gembaboo.aptz.resources"})
