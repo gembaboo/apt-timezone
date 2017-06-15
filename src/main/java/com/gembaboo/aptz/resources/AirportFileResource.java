@@ -26,17 +26,17 @@ import java.util.UUID;
  * to the timezone field of the airport).
  */
 @Slf4j
-@Api(description = "Upload airport file, available at http://ourairports.com/data/airports.csv")
+@Api("Upload airport file, available at http://ourairports.com/data/airports.csv")
 @Controller
 @RequestMapping(value = "/file/1")
 public class AirportFileResource {
 
-    private final static String SEPARATOR = System.getProperty("file.separator");
-    public final static String UPLOAD_DIR = System.getProperty("user.dir") + SEPARATOR + "upload";
+
+    private static final String SEPARATOR = System.getProperty("file.separator");
+    public static final String UPLOAD_DIR = System.getProperty("user.dir") + SEPARATOR + "upload";
 
     @Autowired
     private ScheduledUpdate scheduledUpdate;
-
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -69,9 +69,9 @@ public class AirportFileResource {
         byte[] bytes = file.getBytes();
         String fileName = getFileName();
         File uploadedFile = new File(fileName);
-        BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile));
-        stream.write(bytes);
-        stream.close();
+        try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadedFile))) {
+            stream.write(bytes);
+        }
         return uploadedFile;
     }
 

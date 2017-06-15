@@ -25,7 +25,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Slf4j
-@Api(description = "Determine timezone for an airport")
+@Api("Determine timezone for an airport")
 @Controller
 @RequestMapping(value = "/airport/1")
 public class AirportResource {
@@ -36,21 +36,21 @@ public class AirportResource {
     @Autowired
     private AirportRepository airportRepository;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{iataCode}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public HttpEntity<Resource<Airport>> getAirport(@PathVariable String id) {
-        Airport airportRecord = airportRepository.findOne(id);
+    public HttpEntity<Resource<Airport>> getAirport(@PathVariable String iataCode) {
+        Airport airportRecord = airportRepository.findOne(iataCode);
         if (airportRecord == null) {
             airportRecord = new Airport();
-            airportRecord.setAirport(id);
+            airportRecord.setIataCode(iataCode);
         }
-        if (airportRecord.getZoneId() == null) {
+        if (airportRecord.getZoneId() == null && airportRecord.getLocation() != null) {
             airportRecord = obtainZoneId(airportRecord);
         }
         Resource<Airport> airportResource = new Resource<>(airportRecord);
         //add self reference
-        airportResource.add(linkTo(methodOn(AirportResource.class).getAirport(id)).withSelfRel());
-        airportResource.add(linkTo(methodOn(AirportResource.class).saveAirportTimeZone(id, "")).withSelfRel());
+        airportResource.add(linkTo(methodOn(AirportResource.class).getAirport(iataCode)).withSelfRel());
+        airportResource.add(linkTo(methodOn(AirportResource.class).saveAirportTimeZone(iataCode, "")).withSelfRel());
         return new ResponseEntity<>(airportResource, HttpStatus.OK);
     }
 
@@ -62,19 +62,19 @@ public class AirportResource {
         return new ResponseEntity<>(assembler.toResource(airportPage), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}?timezone={timezone}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{iataCode}?timezone={timezone}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public HttpEntity<Resource<Airport>> saveAirportTimeZone(@PathVariable String id, @PathVariable String timezone) {
-        Airport airportRecord = airportRepository.findOne(id);
+    public HttpEntity<Resource<Airport>> saveAirportTimeZone(@PathVariable String iataCode, @PathVariable String timezone) {
+        Airport airportRecord = airportRepository.findOne(iataCode);
         if (airportRecord == null) {
             airportRecord = new Airport();
-            airportRecord.setAirport(id);
+            airportRecord.setIataCode(iataCode);
         }
         airportRecord.setTimeZone(timezone);
         airportRepository.save(airportRecord);
         Resource<Airport> airportResource = new Resource<>(airportRecord);
         //add reference to the get method
-        airportResource.add(linkTo(methodOn(AirportResource.class).getAirport(id)).withSelfRel());
+        airportResource.add(linkTo(methodOn(AirportResource.class).getAirport(iataCode)).withSelfRel());
         return new ResponseEntity<>(airportResource, HttpStatus.OK);
     }
 

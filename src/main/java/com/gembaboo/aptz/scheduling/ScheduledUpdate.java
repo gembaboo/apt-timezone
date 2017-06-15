@@ -95,7 +95,7 @@ public class ScheduledUpdate implements Job {
             if (airport.getLocation() != null) {
                 updateAirportUsingApi(airport);
             } else {
-                log.warn("Location for airport {} ({}) is not provided, can not update timezone.", airport.getAirport(), airport.getName());
+                log.warn("Location for airport {} ({}) is not provided, can not update timezone.", airport.getIataCode(), airport.getName());
                 airportRepository.save(airport);
                 processEntry();
             }
@@ -110,11 +110,11 @@ public class ScheduledUpdate implements Job {
             updateTimezone(airport, timezone);
             batchStatus.setNumberOfProcessed(batchStatus.getNumberOfProcessed() + 1);
         } catch (LocationTimeZone.OverQueryLimitException e) {
-            log.error("Could not update airport {} ({}/{}) due to error {}", airport.getAirport(), airport.getName(), airport.getCountry(), e.getMessage());
+            log.error("Could not update airport {} ({}/{}) due to error {}", airport.getIataCode(), airport.getName(), airport.getCountry(), e.getMessage());
             batchStatus.setNumberOfFailed(batchStatus.getNumberOfFailed() + 1);
             rescheduleJob();
         } catch (Exception e) {
-            log.error("Could not update airport {} ({}/{}) due to error {}", airport.getAirport(), airport.getName(), airport.getCountry(), e.getMessage());
+            log.error("Could not update airport {} ({}/{}) due to error {}", airport.getIataCode(), airport.getName(), airport.getCountry(), e.getMessage());
             batchStatus.setNumberOfFailed(batchStatus.getNumberOfFailed() + 1);
         } finally {
             batchStatus.setNumberOfCalls(batchStatus.getNumberOfCalls() + 1);
@@ -138,9 +138,9 @@ public class ScheduledUpdate implements Job {
 
     private void updateTimezone(Airport airport, String timezone) {
         if (timezone.equals(airport.getTimeZone())) {
-            log.info("Timezone for airport {} ({}/{}) is still valid {}", airport.getAirport(), airport.getName(), airport.getCountry(), airport.getTimeZone());
+            log.info("Timezone for airport {} ({}/{}) is still valid {}", airport.getIataCode(), airport.getName(), airport.getCountry(), airport.getTimeZone());
         } else {
-            log.info("Timezone for airport {} ({}/{}) updated from {} to {}", airport.getAirport(), airport.getName(), airport.getCountry(), airport.getTimeZone(), timezone);
+            log.info("Timezone for airport {} ({}/{}) updated from {} to {}", airport.getIataCode(), airport.getName(), airport.getCountry(), airport.getTimeZone(), timezone);
             airport.setTimeZone(timezone);
         }
     }

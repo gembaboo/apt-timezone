@@ -24,7 +24,7 @@ public class LocationTimeZone {
     private String apiKey;
 
     private RestTemplate restTemplate = new RestTemplate();
-    private final String url = "https://maps.googleapis.com/maps/api/timezone/json?location={xlat},{ylon}&timestamp={timestamp}&key={google.api_key}";
+    private static final String URL = "https://maps.googleapis.com/maps/api/timezone/json?location={xlat},{ylon}&timestamp={timestamp}&key={google.api_key}";
 
     /**
      * @param x The latitude
@@ -33,19 +33,19 @@ public class LocationTimeZone {
      */
     public ZoneId getLocationTimeZone(@RequestParam Double x, @RequestParam Double y) {
         //Create the rest request
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap();
         params.put("xlat", String.format(Locale.ENGLISH, "%.15f", x));
         params.put("ylon", String.format(Locale.ENGLISH, "%.15f", y));
         params.put("timestamp", String.format(Locale.ENGLISH, "%d", System.currentTimeMillis() / 1000));
         params.put("google.api_key", apiKey);
 
         //Call google API
-        TimeZoneServiceResponse response = restTemplate.getForObject(url, TimeZoneServiceResponse.class, params);
+        TimeZoneServiceResponse response = restTemplate.getForObject(URL, TimeZoneServiceResponse.class, params);
         String timeZoneId = "";
         //Check response
         if (response.getStatus().equals("OK")) {
             timeZoneId = response.getTimeZoneId();
-        } else if (response.getStatus().equals("OVER_QUERY_LIMIT")){
+        } else if (response.getStatus().equals("OVER_QUERY_LIMIT")) {
             throw new OverQueryLimitException();
         } else {
             log.error("Could not get timezone {}", response);
@@ -60,7 +60,7 @@ public class LocationTimeZone {
         return result;
     }
 
-    public final class OverQueryLimitException extends RuntimeException{
+    public final class OverQueryLimitException extends RuntimeException {
         private static final long serialVersionUID = 3331206221585330957L;
 
         public OverQueryLimitException() {

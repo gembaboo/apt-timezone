@@ -42,10 +42,10 @@ public class CsvToMongoRouteBuilder extends CsvRouteBuilder {
      * @param record Object representing one line in the airport file
      */
     private void persistData(AirportFileRecord record) {
-        String airportCode = record.getIataCode();
-        if (airportCode != null) {
+        String iataCode = record.getIataCode();
+        if (iataCode != null) {
             Airport airport = new Airport();
-            airport.setAirport(airportCode);
+            airport.setIataCode(iataCode);
             airport.setLocation(new Point(record.getLatitudeDeg(), record.getLongitudeDeg()));
             airport.setName(record.getName());
             airport.setCountry(record.getIsoCountry());

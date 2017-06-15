@@ -11,5 +11,5 @@ public class TimeZoneServiceResponse {
     private String timeZoneId;
     private String timeZoneName;
     private String status;
-    private String error_message;
+    private String errorMessage;
 }
